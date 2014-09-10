@@ -86,7 +86,7 @@ if (count($_FILES) > 0 && $_FILES ['file1']['error'] == 0) {
     <h1> TODO List </h1>
 <ul>
     <?php foreach ($items as $key => $item) : ?>
-        <li><a href='?remove=<?= $key; ?>'>Item Completed</a> - <?= $item; ?></li>
+        <li><a href='?remove=<?= $key; ?>'>Item Completed</a> - <?= htmlspecialchars(strip_tags($item)); ?></li>
     <?php endforeach; ?>
 
 </ul>
