@@ -1,6 +1,10 @@
 <?php
 define('FILENAME', '../data/address_book.csv');
 
+class address_book {
+
+     public $filename = '';
+
 // add new contact info in new row
 function read_from_csv($filename = FILENAME) {
 
@@ -17,6 +21,8 @@ function read_from_csv($filename = FILENAME) {
     return $address_book;
 }
 
+}     
+
 // enact function to save csv file (pass in the filename);
 function save_to_csv($address_book, $filename = FILENAME) {
     $handle = fopen($filename, 'w');
@@ -26,9 +32,11 @@ function save_to_csv($address_book, $filename = FILENAME) {
     }
 
     fclose($handle);  
-}
 
 $address_book = read_from_csv();
+
+}
+
 
 // =============================================================================
    
