@@ -1,41 +1,48 @@
 <?php
+
 define('FILENAME', '../data/address_book.csv');
 
-class address_book {
+class AddressDataStore {
+    public $filename = '';
 
-     public $filename = '';
+    // set name on instantiation
+    function __construct($filename = FILENAME)
+    {
+        $this->filename = $filename;
+    }
 
-// add new contact info in new row
-function read_from_csv($filename = FILENAME) {
+    // add new contact info in new row
+    function read_from_csv() {
 
-    $handle = fopen($filename, 'r');
+        $handle = fopen($this->filename, 'r');
 
-    while (!feof($handle)) {
-        $row = fgetcsv($handle);
+        while (!feof($handle)) {
+            $row = fgetcsv($handle);
 
-        if (!empty($row)) {
-            $address_book[] = $row;
+            if (!empty($row)) {
+                $address_book[] = $row;
+            }
         }
+
+        return $address_book;
     }
 
-    return $address_book;
-}
+    function save_to_csv($address_book) {
+        $handle = fopen($this->filename, 'w');
 
-}     
+        foreach ($address_book as $row) {
+            fputcsv($handle, $row);
+        }
 
-// enact function to save csv file (pass in the filename);
-function save_to_csv($address_book, $filename = FILENAME) {
-    $handle = fopen($filename, 'w');
-
-    foreach ($address_book as $row) {
-        fputcsv($handle, $row);
+        fclose($handle);
     }
-
-    fclose($handle);  
-
-$address_book = read_from_csv();
-
 }
+
+    // enact function to save csv file (pass in the filename);
+
+$ads = new AddressDataStore();
+$address_book = $ads->read_from_csv();
+
 
 
 // =============================================================================
@@ -80,7 +87,7 @@ $address_book = read_from_csv();
 
         // check names on these, enter correct variable names - are correct (doublecheck?);
         $address_book[] = $contact;
-        save_to_csv($address_book);
+        $ads->save_to_csv($address_book);
     }  // End POST Check 
 
 
@@ -92,8 +99,26 @@ $address_book = read_from_csv();
         // reindex numbers of list with item removed
         $address_book = array_values($address_book);
         //save new todo to file with "save_to_file" function
-        save_to_csv($address_book); 
+        $ads->save_to_csv($address_book); 
     }
+
+        // Verify that files were uploaded and no errors occured
+    if (count($_FILES) > 0 && $_FILES ['file1']['error'] == 0) {
+        // create or set destination directory for uploaded files
+        $upload_dir = '/vagrant/sites/planner.dev/public/uploads/';
+        // select fileName from uploaded file by basename
+        $fileName = basename($_FILES['file1']['name']);
+        // save file under original file name and OUR upload directory
+        $saved_filename = $upload_dir . $fileName ;
+        // move file to temporary location, our upload directory folder
+        move_uploaded_file($_FILES['file1']['tmp_name'], $saved_filename);
+   
+        $newAds = new AddressDataStore($saved_filename);
+
+        $upload_items = $newAds->read_from_csv();
+        $address_book = array_merge($address_book, $upload_items);
+        $ads->save_to_csv($address_book);
+}
 
 ?>
 <html>
@@ -132,6 +157,17 @@ $address_book = read_from_csv();
         <input type="text"  name="state" placeholder="State" id="state" />
         <input type="text"  name="zip" placeholder="Zip" id="zip" />
         <button value="submit">Submit</button>
+    </form>
+
+
+    <form method="POST" enctype="multipart/form-data" action="address_book.php">
+        <p>
+        <label for="file1">File to upload: </label>
+        <input type="file" id="file1" name="file1">
+        </p>
+        <p>
+        <input type="submit" value="Upload">
+        </p>
     </form>
 
 </body>
