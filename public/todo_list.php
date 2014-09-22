@@ -59,9 +59,12 @@ if (count($_FILES) > 0 && $_FILES ['file1']['error'] == 0) {
 }
 ?>
 
-<html>
+
+<!-- <html>
 <head>
     <title>Sample TODO list</title>
+    <link rel="stylesheet" type="text/css" href="/css/todo_list.css"></link> 
+
     <style>
         h1 {
             color: PaleVioletRed;
@@ -80,42 +83,42 @@ if (count($_FILES) > 0 && $_FILES ['file1']['error'] == 0) {
 
         }
     </style>          
-</head>
-<body>
+</head> 
+<body> -->
 
     <h1> TODO List </h1>
+    <link rel="stylesheet" type="text/css" href="/css/todo_list.css"></link> 
+
 <ul>
     <?php foreach ($items as $key => $item) : ?>
         <li><a href='?remove=<?= $key; ?>'>Item Completed</a> - <?= htmlspecialchars(strip_tags($item)); ?></li>
     <?php endforeach; ?>
-
 </ul>
 
-
- <!-- Add Form, to allow for items to be added  -->
+<!-- Add Form, to allow for items to be added  -->
 <form name="additem" method="POST" action="todo_list.php">
     <label>Add Item: </label>
     <input type="text" id="additem" name="additem">
     <button value="submit">Add Item</button>
 </form>
 
-
-<!-- check whether file has been saved  -->
+<!-- check to see whether file has saved successfully  -->
 <? if (isset($saved_filename)): ?>
     // if successfully saved, show link to newly uploaded file
-<p>You can download your file <a href='/uploads/{$filename}'>here</a>.</p> 
+    <p>You can download your file <a href='/uploads/{$filename}'>here</a>.</p> 
 <? endif; ?>
 
 <h2> Upload File: <h2>
     <form method="POST" enctype="multipart/form-data" action="todo_list.php">
-       <p>
-       <label for="file1">File to upload: </label>
-       <input type="file" id="file1" name="file1">
-       </p>
-       <p>
-       <input type="submit" value="Upload">
-       </p>
+        <p>
+        <label for="file1">File to upload: </label>
+        <input type="file" id="file1" name="file1">
+        </p>
+        <p>
+        <input type="submit" value="Upload">
+        </p>
     </form>
+
 </body>
 </html>
    
